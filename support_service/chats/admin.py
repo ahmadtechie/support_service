@@ -1,3 +1,22 @@
 from django.contrib import admin
+from .models import Conversation, Message
 
-# Register your models here.
+
+class ConversationModel(admin.ModelAdmin):
+    list_display = ('id', 'customer_id', 'admin_id', 'vendor_id', 'created_at')
+    filter_horizontal = ()
+    list_filter = ()
+    fieldsets = ()
+    ordering = ('-created_at',)
+
+
+class MessageModel(admin.ModelAdmin):
+    list_display = ('conversation', 'from_user_id', 'to_user_id', 'content', 'timestamp', 'read')
+    filter_horizontal = ()
+    list_filter = ()
+    fieldsets = ()
+    ordering = ('-timestamp',)
+
+
+admin.site.register(Conversation, ConversationModel)
+admin.site.register(Message, MessageModel)
