@@ -1,3 +1,5 @@
+import dj_database_url
+
 from .base import *  # noqa
 from .base import env
 
@@ -82,6 +84,11 @@ EMAIL_SUBJECT_PREFIX = env(
 # https://anymail.readthedocs.io/en/stable/esps
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ANYMAIL = {}
+
+
+DATABASES = {
+    'default': dj_database_url.parse(env('DATABASE_URL'), conn_max_age=600),
+}
 
 # LOGGING
 # ------------------------------------------------------------------------------
