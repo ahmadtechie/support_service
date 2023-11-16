@@ -3,7 +3,7 @@ from .models import Conversation, Message
 
 
 class ConversationModel(admin.ModelAdmin):
-    list_display = ('id', 'customer_id', 'admin_id', 'vendor_id', 'created_at')
+    list_display = ('id', 'name', 'created_at')
     filter_horizontal = ()
     list_filter = ()
     fieldsets = ()

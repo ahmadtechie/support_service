@@ -4,13 +4,11 @@ from django.db import models
 
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    customer_id = models.UUIDField()  # User ID of the customer
-    admin_id = models.UUIDField(null=True, blank=True)  # User ID of the admin (if assigned)
-    vendor_id = models.UUIDField(null=True, blank=True)  # User ID of the vendor (if assigned)
+    name = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Conversation-{self.id} with Customer-{self.customer_id}"
+        return f"{self.name}"
 
 
 class Message(models.Model):
