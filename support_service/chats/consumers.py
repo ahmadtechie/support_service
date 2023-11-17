@@ -35,17 +35,16 @@ class ChatConsumer(JsonWebsocketConsumer):
 
         super().__init__(args, kwargs)
         self.customer_id = customer_id
-        self.customer = None
         self.admin_id = admin_id
         self.conversation = None
         self.conversation_name = None
 
     def connect(self):
         print("Connected!")
-        self.customer = self.scope['customer']
         self.accept()
 
         self.conversation_name = f"{self.scope['url_route']['kwargs']['conversation_name']}"
+        print('conversation_name ', self.conversation_name)
         self.conversation, created = Conversation.objects.get_or_create(
             name=self.conversation_name,
         )
@@ -61,8 +60,7 @@ class ChatConsumer(JsonWebsocketConsumer):
             "customer_id": self.customer_id,
             "admin_id": self.admin_id,
             "messages": MessageSerializer(messages, many=True).data,
-        }
-    )
+        })
 
     def disconnect(self, code):
         print("Disconnected!")
@@ -80,6 +78,9 @@ class ChatConsumer(JsonWebsocketConsumer):
     def receive_json(self, content, **kwargs):
         try:
             message_type = content.get("type")
+
+            if message_type == "any":
+                print(content)
 
             if message_type == "chat_message":
                 from_user_id = content.get("from_user_id")
