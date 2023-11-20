@@ -77,7 +77,7 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     def receive_json(self, content, **kwargs):
         try:
-            message_type = content.get("type")
+            message_type = content.get("typ")
 
             if message_type == "any":
                 print(content)

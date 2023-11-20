@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 
+from channels.auth import AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
 
 # This allows easy placement of apps within the interior
@@ -33,6 +34,8 @@ from channels.routing import ProtocolTypeRouter, URLRouter  # noqa isort:skip
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": URLRouter(routing.websocket_urlpatterns),
+        "websocket": AuthMiddlewareStack(
+            URLRouter(routing.websocket_urlpatterns)
+        ),
     }
 )
