@@ -11,7 +11,7 @@ SECRET_KEY = env(
     default="bhIN26gZc8X1efAosTDB0pnCbImTnhMGOIU5JvOLPkb86rNGjEdbwFTl8S1jTGHf",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", '127.0.0.1:3000']
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", '127.0.0.1:3000', 'fixam-chat-app.onrender.com']
 
 DATABASES = {
     'default': {
