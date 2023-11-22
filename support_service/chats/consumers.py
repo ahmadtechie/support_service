@@ -77,10 +77,13 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     def receive_json(self, content, **kwargs):
         try:
-            message_type = content.get("typ")
+            message_type = content.get("type")
 
             if message_type == "any":
                 print(content)
+
+            if message_type == "start_conversation":
+                print(content.get('data'))
 
             if message_type == "chat_message":
                 from_user_id = content.get("from_user_id")
