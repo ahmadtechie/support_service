@@ -89,6 +89,21 @@ class ChatConsumer(JsonWebsocketConsumer):
                     "type": "conversation_created",
                     "conversation_id": self.conversation.id,
                 })
+            if message_type == "outgoing":
+                try:
+                    self.conversation = Conversation.objects.get(id=content.get('conversationId'))
+                    message = Message.objects.create(
+                        conversation_id=self.conversation.id,
+                        from_user_email=content('fromUserEmail'),
+                        content=content.get('content')
+                    )
+
+                    self.send_json({
+                        "type": "incoming_message",
+                        "message": message.content,
+                    })
+                except Conversation.DoesNotExist:
+                    pass
 
             if message_type == "chat_message":
                 from_user_id = content.get("from_user_id")

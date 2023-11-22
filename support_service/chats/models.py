@@ -16,8 +16,8 @@ class Conversation(models.Model):
 class Message(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
-    from_user_email = models.UUIDField(null=True)
-    to_user_email = models.UUIDField(null=True)
+    from_user_email = models.EmailField(null=True)
+    to_user_email = models.EmailField(null=True)
     content = models.CharField(max_length=512)
     timestamp = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
