@@ -2,6 +2,7 @@ import json
 import uuid
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
+from datetime import datetime
 
 from support_service.chats.models import Conversation, Message
 from support_service.chats.api.serializers import MessageSerializer
@@ -35,6 +36,7 @@ class ChatConsumer(JsonWebsocketConsumer):
 
         super().__init__(args, kwargs)
         self.customer_id = customer_id
+        self.admin_email = 'admin@fixam.com'
         self.admin_id = admin_id
         self.conversation = None
         self.conversation_name = None
@@ -43,24 +45,14 @@ class ChatConsumer(JsonWebsocketConsumer):
         print("Connected!")
         self.accept()
 
-        self.conversation_name = f"{self.scope['url_route']['kwargs']['conversation_name']}"
-        print('conversation_name ', self.conversation_name)
-        self.conversation, created = Conversation.objects.get_or_create(
-            name=self.conversation_name,
-        )
+        if self.conversation_name:
+            async_to_sync(self.channel_layer.group_add)(
+                self.conversation_name,
+                self.channel_name,
+            )
 
-        async_to_sync(self.channel_layer.group_add)(
-            self.conversation_name,
-            self.channel_name,
-        )
-
-        messages = self.conversation.messages.all().order_by("-timestamp")[0:50]
-        self.send_json({
-            "type": "last_50_messages",
-            "customer_id": self.customer_id,
-            "admin_id": self.admin_id,
-            "messages": MessageSerializer(messages, many=True).data,
-        })
+        # self.conversation_name = f"{self.scope['url_route']['kwargs']['conversation_name']}"
+        # print('conversation_name ', self.conversation_name)
 
     def disconnect(self, code):
         print("Disconnected!")
@@ -78,12 +70,25 @@ class ChatConsumer(JsonWebsocketConsumer):
     def receive_json(self, content, **kwargs):
         try:
             message_type = content.get("type")
+            data = content.get('data')
 
             if message_type == "any":
                 print(content)
 
             if message_type == "start_conversation":
-                print(content.get('data'))
+                print('start_conversation data received', data)
+
+                self.conversation_name = f'{data['username']}_{datetime.now()}'
+                self.conversation, created = Conversation.objects.get_or_create(
+                    name=self.conversation_name,
+                    email=data['email'],
+                    username=data['username'],
+                )
+
+                self.send_json({
+                    "type": "conversation_created",
+                    "conversation_id": self.conversation.id,
+                })
 
             if message_type == "chat_message":
                 from_user_id = content.get("from_user_id")

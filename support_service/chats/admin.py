@@ -11,7 +11,7 @@ class ConversationModel(admin.ModelAdmin):
 
 
 class MessageModel(admin.ModelAdmin):
-    list_display = ('conversation', 'from_user_id', 'to_user_id', 'content', 'timestamp', 'read')
+    list_display = ('conversation', 'from_user_email', 'to_user_email', 'content', 'timestamp', 'read')
     filter_horizontal = ()
     list_filter = ()
     fieldsets = ()

@@ -5,6 +5,8 @@ from django.db import models
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=128)
+    email = models.EmailField(max_length=100)
+    username = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -14,8 +16,8 @@ class Conversation(models.Model):
 class Message(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
-    from_user_id = models.UUIDField()
-    to_user_id = models.UUIDField()
+    from_user_email = models.UUIDField(null=True)
+    to_user_email = models.UUIDField(null=True)
     content = models.CharField(max_length=512)
     timestamp = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
